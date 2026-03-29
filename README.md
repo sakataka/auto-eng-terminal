@@ -28,6 +28,7 @@ It also exposes explicit commands so you can bind your normal terminal shortcuts
 Install `im-select` with Homebrew:
 
 ```sh
+brew tap daipeihust/tap
 brew install im-select
 ```
 

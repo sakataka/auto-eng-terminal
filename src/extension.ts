@@ -128,7 +128,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
             if (currentConfig.showMissingDependencyWarning) {
                 void vscode.window.showWarningMessage(
-                    'auto-eng-terminal requires "im-select". Install it with `brew install im-select`, or set autoEngTerminal.imSelectPath.',
+                    'auto-eng-terminal requires "im-select". Install it with `brew tap daipeihust/tap && brew install im-select`, or set autoEngTerminal.imSelectPath.',
                 );
             }
 
