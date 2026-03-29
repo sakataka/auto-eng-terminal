@@ -87,6 +87,31 @@ npm run lint
 npm test
 ```
 
+## Build And Install Locally
+
+Generate a VSIX file:
+
+```sh
+npm install
+npm run package:vsix
+```
+
+This creates a file like `auto-eng-terminal-0.1.0.vsix` in the repository root.
+
+Install it into VS Code in either of these ways:
+
+```sh
+code --install-extension auto-eng-terminal-0.1.0.vsix
+```
+
+Or in VS Code:
+
+1. Open the Command Palette.
+2. Run `Extensions: Install from VSIX...`.
+3. Pick the generated `.vsix` file.
+
+After installation, reload VS Code and confirm `im-select` is available from the environment VS Code uses. If needed, set `autoEngTerminal.imSelectPath` explicitly.
+
 ## Known Limitations
 
 - This is a macOS-only extension.
