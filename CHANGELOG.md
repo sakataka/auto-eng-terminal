@@ -1,9 +1,9 @@
 # Change Log
 
-All notable changes to the "auto-eng-terminal" extension will be documented in this file.
+## [0.1.0]
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+- Replace the initial prototype with a configurable macOS-only IME switching flow
+- Add explicit terminal commands for focus/toggle/new terminal actions
+- Add dependency detection for `im-select`
+- Replace template documentation with real project documentation
+- Add unit tests for IME switching helpers

@@ -1,15 +1,20 @@
 import * as assert from 'assert';
-
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 import * as vscode from 'vscode';
-// import * as myExtension from '../../extension';
 
-suite('Extension Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
+suite('Extension integration', () => {
+    test('registers the public commands', async () => {
+        const extension = vscode.extensions.getExtension(
+            'Takashivscode.auto-eng-terminal',
+        );
 
-	test('Sample test', () => {
-		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
-	});
+        assert.ok(extension, 'extension should be available in the test host');
+
+        await extension.activate();
+
+        const commands = await vscode.commands.getCommands(true);
+
+        assert.ok(commands.includes('auto-eng-terminal.switchInputSource'));
+        assert.ok(commands.includes('auto-eng-terminal.focusTerminal'));
+        assert.ok(commands.includes('auto-eng-terminal.newTerminal'));
+    });
 });

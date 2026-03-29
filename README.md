@@ -1,71 +1,93 @@
-# auto-eng-terminal README
+# Auto ENG Terminal
 
-This is the README for your extension "auto-eng-terminal". After writing up a brief description, we recommend including the following sections.
+`auto-eng-terminal` is a small VS Code extension for macOS that switches the input source to English when you move into the integrated terminal.
 
-## Features
+This repository is intentionally focused on one job:
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- You usually type shell commands in the VS Code terminal.
+- Your IME is sometimes left in Japanese input mode.
+- You want the terminal path to bias toward English input so commands do not get mangled by kana conversion.
 
-For example if there is an image subfolder under your extension project workspace:
+## What It Does
 
-\!\[feature X\]\(images/feature-x.png\)
+The extension uses [`im-select`](https://github.com/daipeihust/im-select) and reacts to terminal-oriented actions such as:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- VS Code startup when a terminal is already active
+- Creating a new terminal
+- Switching the active terminal
+- Running the extension's own "focus/new terminal" commands
+
+It also exposes explicit commands so you can bind your normal terminal shortcuts to a version that switches the IME more reliably.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- macOS
+- VS Code `1.99.0` or newer
+- `im-select`
 
-## Extension Settings
+Install `im-select` with Homebrew:
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+```sh
+brew install im-select
+```
 
-For example:
+If `im-select` is not on the default VS Code PATH, set `autoEngTerminal.imSelectPath` to an absolute path such as `/opt/homebrew/bin/im-select`.
+
+## Settings
 
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `autoEngTerminal.enabled`: Enable or disable the extension.
+- `autoEngTerminal.inputSourceId`: The input source ID to switch to. Default is `com.apple.keylayout.ABC`.
+- `autoEngTerminal.imSelectPath`: Optional explicit path to `im-select`.
+- `autoEngTerminal.switchOnStartup`: Switch when VS Code starts and a terminal is already active.
+- `autoEngTerminal.switchOnOpenTerminal`: Switch when a terminal is created.
+- `autoEngTerminal.switchOnActiveTerminalChange`: Switch when the active terminal changes.
+- `autoEngTerminal.switchDebounceMs`: Debounce window used to suppress duplicate switch attempts.
+- `autoEngTerminal.startupDelayMs`: Delay before the startup switch.
+- `autoEngTerminal.terminalOpenDelayMs`: Delay before the "terminal opened" switch.
+- `autoEngTerminal.terminalCommandDelayMs`: Delay after the extension's terminal commands run.
+- `autoEngTerminal.showMissingDependencyWarning`: Show a warning if `im-select` cannot be found.
+- `autoEngTerminal.enableDebugLogs`: Emit debug logs to the `Auto ENG Terminal` output channel.
 
-## Known Issues
+## Commands
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- `Auto ENG Terminal: Switch Input Source Now`
+- `Auto ENG Terminal: Focus Terminal and Switch Input Source`
+- `Auto ENG Terminal: Create New Terminal and Switch Input Source`
 
-## Release Notes
+## Recommended Keybindings
 
-Users appreciate release notes as you update your extension.
+If you want the behavior to be more explicit and predictable, remap your terminal-entry shortcuts to the extension commands instead of the stock VS Code commands.
 
-### 1.0.0
+Example:
 
-Initial release of ...
+```json
+[
+  {
+    "key": "cmd+`",
+    "command": "auto-eng-terminal.focusTerminal"
+  },
+  {
+    "key": "cmd+shift+`",
+    "command": "auto-eng-terminal.newTerminal"
+  }
+]
+```
 
-### 1.0.1
+Use whatever shortcuts already fit your setup. The point is to let the extension run on the exact terminal entry path you care about.
 
-Fixed issue #.
+## Development
 
-### 1.1.0
+```sh
+npm install
+npm run compile
+npm run lint
+npm test
+```
 
-Added features X, Y, and Z.
+## Known Limitations
 
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- This is a macOS-only extension.
+- VS Code does not expose a perfect "terminal just gained keyboard focus" event, so the extension uses a practical approximation.
+- If you need stronger guarantees, bind your terminal-entry shortcut to `auto-eng-terminal.focusTerminal`.

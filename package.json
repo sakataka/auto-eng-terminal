@@ -1,13 +1,26 @@
 {
   "name": "auto-eng-terminal",
-  "displayName": "auto-eng-terminal",
-  "description": "Automatically switch to English input mode when focusing the terminal.",
-  "version": "0.0.1",
+  "displayName": "Auto ENG Terminal",
+  "description": "Switch the macOS input source to English when using the VS Code terminal.",
+  "version": "0.1.0",
+  "publisher": "Takashivscode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sakataka/auto-eng-terminal.git"
+  },
   "engines": {
     "vscode": "^1.99.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Productivity"
+  ],
+  "keywords": [
+    "macos",
+    "ime",
+    "terminal",
+    "input-source",
+    "japanese"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -16,10 +29,87 @@
   "contributes": {
     "commands": [
       {
-        "command": "auto-eng-terminal.helloWorld",
-        "title": "Hello World"
+        "command": "auto-eng-terminal.switchInputSource",
+        "title": "Auto ENG Terminal: Switch Input Source Now"
+      },
+      {
+        "command": "auto-eng-terminal.focusTerminal",
+        "title": "Auto ENG Terminal: Focus Terminal and Switch Input Source"
+      },
+      {
+        "command": "auto-eng-terminal.newTerminal",
+        "title": "Auto ENG Terminal: Create New Terminal and Switch Input Source"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Auto ENG Terminal",
+      "properties": {
+        "autoEngTerminal.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic input-source switching for terminal-related actions."
+        },
+        "autoEngTerminal.inputSourceId": {
+          "type": "string",
+          "default": "com.apple.keylayout.ABC",
+          "description": "The macOS input source ID to switch to when terminal-related actions fire."
+        },
+        "autoEngTerminal.imSelectPath": {
+          "type": "string",
+          "default": "",
+          "description": "Optional absolute path to im-select. Leave empty to probe common locations."
+        },
+        "autoEngTerminal.switchOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Switch when VS Code starts and a terminal is already active."
+        },
+        "autoEngTerminal.switchOnOpenTerminal": {
+          "type": "boolean",
+          "default": true,
+          "description": "Switch after a new terminal is opened."
+        },
+        "autoEngTerminal.switchOnActiveTerminalChange": {
+          "type": "boolean",
+          "default": true,
+          "description": "Switch when the active terminal changes."
+        },
+        "autoEngTerminal.switchDebounceMs": {
+          "type": "number",
+          "default": 150,
+          "minimum": 0,
+          "description": "Minimum time between automatic switch attempts."
+        },
+        "autoEngTerminal.startupDelayMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "Delay before the startup switch check runs."
+        },
+        "autoEngTerminal.terminalOpenDelayMs": {
+          "type": "number",
+          "default": 120,
+          "minimum": 0,
+          "description": "Delay before switching after a terminal is opened."
+        },
+        "autoEngTerminal.terminalCommandDelayMs": {
+          "type": "number",
+          "default": 120,
+          "minimum": 0,
+          "description": "Delay before switching after the extension's terminal commands run."
+        },
+        "autoEngTerminal.showMissingDependencyWarning": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a warning if im-select cannot be resolved."
+        },
+        "autoEngTerminal.enableDebugLogs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable verbose logging in the Auto ENG Terminal output channel."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -30,14 +120,14 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.99.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
+    "@types/vscode": "^1.99.0",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
-    "eslint": "^9.23.0",
-    "typescript": "^5.8.2",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.23.0",
+    "typescript": "^5.8.2"
   }
 }
