@@ -70,13 +70,27 @@ function registerTimeout(
     callback: () => void,
     delayMs: number,
 ) {
+    let isDisposed = false;
     const timeout = setTimeout(callback, delayMs);
+    const disposable = new vscode.Disposable(() => {
+        if (isDisposed) {
+            return;
+        }
 
-    context.subscriptions.push(
-        new vscode.Disposable(() => {
-            clearTimeout(timeout);
-        }),
-    );
+        isDisposed = true;
+        clearTimeout(timeout);
+    });
+
+    context.subscriptions.push(disposable);
+
+    return () => {
+        if (isDisposed) {
+            return;
+        }
+
+        isDisposed = true;
+        disposable.dispose();
+    };
 }
 
 async function delay(ms: number): Promise<void> {
@@ -157,8 +171,19 @@ export async function activate(context: vscode.ExtensionContext) {
         );
     }
 
-    function scheduleSwitch(reason: string, delayMs: number) {
-        registerTimeout(context, () => {
+    function scheduleSwitch(
+        reason: string,
+        delayMs: number,
+        shouldRun: () => boolean = () => true,
+    ) {
+        const disposeTimeout = registerTimeout(context, () => {
+            disposeTimeout();
+
+            if (!shouldRun()) {
+                logger.debug(`Skipped scheduled IME switch for "${reason}" because conditions changed.`);
+                return;
+            }
+
             void switchToEnglish(reason);
         }, delayMs);
     }
@@ -188,12 +213,18 @@ export async function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.window.onDidOpenTerminal(() => {
+        vscode.window.onDidOpenTerminal((terminal) => {
             if (!currentConfig.switchOnOpenTerminal || !vscode.window.state.focused) {
                 return;
             }
 
-            scheduleSwitch('terminal opened', currentConfig.terminalOpenDelayMs);
+            scheduleSwitch(
+                'terminal opened',
+                currentConfig.terminalOpenDelayMs,
+                () =>
+                    vscode.window.state.focused &&
+                    vscode.window.activeTerminal === terminal,
+            );
         }),
         vscode.window.onDidChangeActiveTerminal((terminal) => {
             if (

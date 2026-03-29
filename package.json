@@ -4,6 +4,7 @@
   "description": "Switch the macOS input source to English when using the VS Code terminal.",
   "version": "0.1.0",
   "publisher": "Takashivscode",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/sakataka/auto-eng-terminal.git"
